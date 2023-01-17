@@ -8,7 +8,7 @@ html,body {
 }
 
 body{
-    background: url("https://drive.google.com/uc?id=1Ttn4xMaYdvKNPDmL3CHz9fK5JOLgdORx") no-repeat center center fixed;
+    background: url('/pinkbg.png') no-repeat center center fixed;
     background-size: cover;
     overflow: hidden;
 }

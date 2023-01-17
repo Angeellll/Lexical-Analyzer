@@ -32,7 +32,7 @@ function Page() {
     return (
         <MainDiv>
             <Rawr>
-                <div><Logo src="https://drive.google.com/uc?id=17qsjoXJNKiS_9K7Et5iQtsi19a4Ak_8B" alt="" /></div>
+                <div><Logo src='/Logo.png' alt="" /></div>
                 <Title>LESS PROGRAMMING LANGUAGE</Title>
             </Rawr>
             <Form />

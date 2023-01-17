@@ -4,6 +4,9 @@ const nextConfig = {
   compiler: {
     styledComponents: true,
   },
+  images: {
+    minimumCacheTTL: 31536000,
+},
 }
 
 module.exports = nextConfig
