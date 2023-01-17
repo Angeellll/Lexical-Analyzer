@@ -381,7 +381,7 @@ const Lexer = ({ sourceCode, buttonClicked }) => {
 
       //FOR SINGLE LINE COMMENT
       if (currentChar === "/" && sourceCode[currentIndex + 1] === "/") {
-        while (currentChar !== "\n") {
+        while (currentChar !== "\n" || !== "") {
           currentToken += currentChar;
           currentIndex++;
           currentChar = sourceCode[currentIndex];
