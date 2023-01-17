@@ -63,6 +63,7 @@ const Button = styled.button`
 
   &:hover {
     background-image: linear-gradient(to right, #572a8b, #fa00ff);
+    cursor: pointer;
   }
 `;
 
