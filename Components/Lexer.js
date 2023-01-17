@@ -379,48 +379,51 @@ const Lexer = ({ sourceCode, buttonClicked }) => {
         continue;
       }
 
-      //FOR SINGLE LINE COMMENT
-      if (currentChar === "/" && sourceCode[currentIndex + 1] === "/") {
-        while (currentChar !== "\n" || !== "") {
-          currentToken += currentChar;
-          currentIndex++;
-          currentChar = sourceCode[currentIndex];
-        }
-        tokens.push(
-          <StyledDiv>
-            <TokenTitle>Single Line Comment</TokenTitle>
-            <InnerStyledDiv>
-              <Title>{currentToken}</Title>
-            </InnerStyledDiv>
-          </StyledDiv>
-        );
-        currentToken = "";
-        continue;
-      }
+                  //FOR SINGLE LINE COMMENT
+            if (currentChar === "/" && sourceCode[currentIndex + 1] === "/") {
+                currentToken += '/';
+                currentIndex++;
+                currentChar = sourceCode[currentIndex];
+                while (currentChar !== "\n" && currentChar !== "\r" && currentIndex !== sourceCode.length) {
+                  currentToken += currentChar;
+                  currentIndex++;
+                  currentChar = sourceCode[currentIndex];
+                }
+                tokens.push(
+                  <StyledDiv>
+                    <TokenTitle>Single Line Comment</TokenTitle>
+                    <InnerStyledDiv>
+                      <Title>{currentToken}</Title>
+                    </InnerStyledDiv>
+                  </StyledDiv>
+                );
+                currentToken = "";
+                continue;
+              }
+        
 
-      //FOR MULTI LINE COMMENT
-      if (currentChar === "/" && sourceCode[currentIndex + 1] === "*") {
-        currentIndex += 2;
-        currentChar = sourceCode[currentIndex];
-        while (!(currentChar === "*" && sourceCode[currentIndex + 1] === "/")) {
-          currentToken += currentChar;
-          currentIndex++;
-          currentChar = sourceCode[currentIndex];
-        }
-        currentIndex += 2;
-        currentChar = sourceCode[currentIndex];
-        tokens.push(
-          <StyledDiv>
-            <TokenTitle>Multiline Comment</TokenTitle>
-            <InnerStyledDiv>
-              <Title>{currentToken}</Title>
-            </InnerStyledDiv>
-          </StyledDiv>
-        );
-        currentToken = "";
-        continue;
-      }
-
+            //FOR MULTI LINE COMMENT
+            if (currentChar === "/" && sourceCode[currentIndex + 1] === "*") {
+                currentIndex += 2;
+                currentChar = sourceCode[currentIndex];
+                while (!(currentChar === "*" && sourceCode[currentIndex + 1] === "/")) {
+                    currentToken += currentChar;
+                    currentIndex++;
+                    currentChar = sourceCode[currentIndex];
+                }
+                currentIndex += 2;
+                currentChar = sourceCode[currentIndex];
+                tokens.push(
+                    <StyledDiv>
+                        <TokenTitle>Multiline Comment</TokenTitle>
+                        <InnerStyledDiv>
+                            <Title>{"/*"}{currentToken}{"*/"}</Title>
+                        </InnerStyledDiv>
+                    </StyledDiv>
+                );
+                currentToken = "";
+                continue;
+            }
       // FOR NUMBER
       if (isNumber(currentChar)) {
         while (isNumber(sourceCode[currentIndex])) {
