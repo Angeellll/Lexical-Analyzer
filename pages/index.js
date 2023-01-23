@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
-import Form from "../Components/Form";
+import Form from "../Components/Form1";
 import styled from "styled-components";
+import Lexer from '../Components/Lexer1';
+
 
 const MainDiv = styled.div`
   width: 100%;
@@ -36,6 +38,7 @@ function Page() {
                 <Title>LESS PROGRAMMING LANGUAGE</Title>
             </Rawr>
             <Form />
+            <Lexer />
         </MainDiv>
     )
 }
