@@ -205,7 +205,7 @@ function lexer(sourceCode) {
       if (isKeyword(currentToken)) {
         tokens.push({
           token: currentToken,
-          type: values_dict(currentToken)
+          type: "keyword"
         }
         );
       } else if (isReservedWord(currentToken)) {
