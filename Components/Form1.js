@@ -53,7 +53,7 @@ const Input = styled.textarea`
 
 const InputFile = styled.input.attrs({
   type: "file",
-  accept: ".ls"
+  accept: ".lss"
 })`
   margin-right: 10px;
   background-color: white;
@@ -129,7 +129,7 @@ const Form = () => {
     };
     reader.readAsText(file);
 
-    
+    e.preventDefault();
   };
 
   const handleTextAreaChange = (e) => {
@@ -137,18 +137,17 @@ const Form = () => {
   }
 
   const handleFileSubmit = (e) => {
-    console.log("submitting file...");
     console.log(sourceCode)
     setClicked(!click);
     
     if (!sourceCode) {
-      alert('Input .ls file!');
+      alert('Input .lss file!');
       return;
-    } else {
+    } 
       const tokenized = tokensToString(Lexer1(sourceCode));
-      const file = new Blob([tokenized]);
+      const file = new Blob([tokenized], {type: 'text/plain;charset=utf-8'});
       saveAs(file, 'tokenized.txt');
-    }
+    
     e.preventDefault();
 
   };
@@ -163,9 +162,9 @@ const Form = () => {
 
 
   const handleSubmit = (e) => {
-    e.preventDefault();
     setButtonClicked(!buttonClicked);
     setFormData({ sourceCode: e.target.sourceCode.value });
+    e.preventDefault();
   };
 
 
@@ -189,9 +188,10 @@ const Form = () => {
           <form onSubmit={handleSubmit} autoComplete="off">
             <Input
               name="sourceCode"
-              placeholder="Input Code"
+              placeholder='//  Try show("Hello World");'
               value={sourceCode}
               onChange={handleTextAreaChange}
+              readOnly
             />
             <br />
             <Button type="submit">

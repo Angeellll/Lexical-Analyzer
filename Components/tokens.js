@@ -7,10 +7,7 @@ reservedWords.set("False", "FALSE_RESERVED_WORD");
 reservedWords.set("key", "KEY_RESERVED_WORD");
 
 const constants = new Map();
-constants.set("final", "FINAL_CONSTANT");
-constants.set("const", "CONST_CONSTANT");
-constants.set("static", "STATIC_CONSTANT");
-constants.set("define", "DEFINE_CONSTANT");
+constants.set("fixed", "FINAL_CONSTANT");
 
 const keywords = new Map();
 keywords.set("int", "INTEGER_DATATYPE_KEYWORD");
