@@ -1,67 +1,8 @@
-// Variables
-// Set of keywords
+import { constants, reservedWords, keywords, operators, delimeters, brackets, specialCharacters } from "./tokens";
 
 
-
-
-const keywords = new Set([
-  "int",
-  "char",
-  "str",
-  "dec",
-  "boolean",
-  "bool",
-  "list",
-  "dictionary",
-  "dict",
-  "is",
-  "in",
-  "to",
-  "if",
-  "else if",
-  "else",
-  "match",
-  "default",
-  "for",
-  "find",
-  "job",
-  "not",
-  "or",
-  "and",
-  "skip",
-  "stop",
-  "continue",
-  "forward",
-  "backward",
-  "show",
-  "enter",
-]);
-// Set of reserved words
-const reservedWords = new Set(["null", "True", "False", "key"]);
-
-const arithmeticOperator = new Set(["+", "-", "*", "/", "%"]);
-
-// Set of logical operators
-const logicalOperators = new Set(["&", "|", "!", "is not", "and", "or"]);
-// Set of relational operators
-const relationalOperators = new Set(["<", ">", "==", "<=", ">=", "!="]);
-// Set of assignment operators
-const assignmentOperators = new Set(["=", "+=", "-=", "*=", "/=", "%="]);
-// Set of delimeters
-const delimeters = new Set([",", ";"]);
-// Set of brackets
-const brackets = new Set(["{", "}", "[", "]", "(", ")"]);
-// Set of ternary operators
-const ternaryOperators = new Set(["?", "...", ":"]);
-// Increment
-const increment = new Set(["++"]);
-// Decrement
-const decrement = new Set(["--"]);
 // Set of symbols
 const symbols = new Set(["rawr"]);
-// Set of special characters
-const specialCharacters = new Set(["!", "@", "#", "$", "%", "^", "&", "*", "(", ")", "-", "_", "+", "=", ",", ".", "<", ">", "?", "/", ":", ";", "'", "\"", "|", "\\", "[", "]", "{", "}", "`", "~"]);
-
 
 // Check if a character is a letter
 function isLetter(char) {
@@ -71,13 +12,20 @@ function isLetter(char) {
 
 // Check if a character is a number
 function isNumber(char) {
-  const numbers = /[0-9]/;
-  return numbers.test(char);
+  const negativeInteger = /^-\d+$/;
+  const negativeDecimal = /^-\d+\.\d+$/;
+  const integer = /^\d+$/;
+  const decimal = /^\d+\.\d+$/;
+  return negativeInteger.test(char) || negativeDecimal.test(char) || integer.test(char) || decimal.test(char);
 }
 
 // Check if a token is a keyword
 function isKeyword(token) {
   return keywords.has(token);
+}
+
+function isConstant (token) {
+  return constants.has(token);
 }
 
 // Check if a token is a reserved word
@@ -92,27 +40,27 @@ function isSymbol(token) {
 
 // Check if a token is a arithmetic operator
 function isArithmeticOperator(token) {
-  return arithmeticOperator.has(token);
+  return operators.has(token);
 }
 
 // Check if a token is a logical operator
 function isLogicalOperator(token) {
-  return logicalOperators.has(token);
+  return operators.has(token);
 }
 
 // Check if a token is a relational operator
 function isRelationalOperator(token) {
-  return relationalOperators.has(token);
+  return operators.has(token);
 }
 
 // Check if a token is an assignment operator
 function isAssignmentOperator(token) {
-  return assignmentOperators.has(token);
+  return operators.has(token);
 }
 
 // Check if a token is a delimeter
 function isDelimeter(token) {
-  return delimeters.has(token);
+  return delimeters.get(token);
 }
 
 // Check if a token is a bracket
@@ -122,7 +70,7 @@ function isBracket(token) {
 
 // Check if a token is a ternary operator
 function isTernaryOperator(token) {
-  return ternaryOperators.has(token);
+  return operators.has(token);
 }
 
 // Check if a token is a special character
@@ -132,52 +80,121 @@ function isSpecialCharacter(token) {
 
 // Check if a token is an identifier
 function isIdentifier(token) {
-  // check if the first character is an alphabet or underscore
+  // check if the token starts with a letter or underscore
   if (!/^[a-zA-Z_]/.test(token)) {
     return false;
   }
-  // check if the rest of the characters are alphabets, digits, or underscore
-  // check if the token contains any numbers
-  if (/[0-9]/.test(token)) {
+  // check if the token contains any special characters except underscore
+  if (/[^a-zA-Z_0-9]/.test(token)) {
     return false;
   }
   // check if the token is not a keyword or reserved word
-  if (isKeyword(token) || isReservedWord(token)) {
+  if (isKeyword(token) || isReservedWord(token) ) {
     return false;
   }
   return true;
 }
 
-// Check if a token is a string
-function isString(token) {
-  if (token[0] === '"' && token[token.length - 1] === '"') {
+function isInvalidIdentifier(token) {
+
+  // check if the token starts with a digit
+  if (/^[0-9]/.test(token)) {
+    return true;
+  }
+
+  // check if the token starts with a letter or underscore
+  if (!/^[a-zA-Z_]/.test(token)) {
+    return true;
+  }
+  // check if the token contains any special characters except underscore
+  if (/[^a-zA-Z_0-9]/.test(token)) {
+    return true;
+  }
+  // check if the token is not a keyword or reserved word
+  if (isKeyword(token) || isReservedWord(token)) {
     return true;
   }
   return false;
+
 }
 
 // Check if a token is an increment operator
 function isIncrement(token) {
-  return increment.has(token);
+  return operators.has(token);
 }
 
 // Check if a token is an decrement operator
 function isDecrement(token) {
-  return decrement.has(token);
+  return operators.has(token);
 }
 
-function isInvalidToken(token) {
-  if (isKeyword(token) || isReservedWord(token) || isArithmeticOperator(token) || isLogicalOperator(token) || isRelationalOperator(token) || isAssignmentOperator(token) || isDelimeter(token) || isBracket(token) || isTernaryOperator(token) || isSymbol(token)) {
-    return false;
-  }
-  return true;
+function ReservedWord(token) {
+  return reservedWords.get(token);
 }
+
+function Keyword(token) {
+  return keywords.get(token);
+}
+
+function Operator(token) {
+  return operators.get(token);
+}
+
+function SpecialCharacter(token) {
+  return specialCharacters.get(token);
+}
+
+function Delimeter(token) {
+  return delimeters.get(token)
+}
+
+function Bracket(token) {
+  return brackets.get(token)
+}
+
+function Constants(token) {
+  return constants.get(token)
+}
+
+function checkConsecutive(tokens) {
+  let previousType = null;
+  let num = 0;
+
+  for (let i = 0; i < tokens.length; i++) {
+    const token = tokens[i];
+
+    if (previousType && previousType.includes("KEYWORD") && isKeyword(token.token)) {
+      token.type = "RESERVED_WORD";
+    } else if (previousType && previousType.includes("_WORD") && isKeyword(token.token)) {
+      token.type = "RESERVED_WORD";
+    } else if (previousType && previousType.includes("NUMBER") && isNumber(token.token)) {
+      token.type = "INVALID";
+    } else if (previousType === "IDENTIFIER" && isIdentifier(token.token)) {
+      token.type = "INVALID";
+    } else if (previousType === "INVALID" && isIdentifier(token.token)) {
+      token.type = "INVALID";
+    } else if (previousType === "INVALID" && operators.has(token.token)) {
+      token.type = "INVALID";
+    } else if (previousType && previousType.includes("_OPERATOR") && operators.has(token.token)) {
+      token.type = "INVALID";
+    } else if (previousType && previousType.includes("CONSTANT") && isKeyword(token.token) && token.type.includes("DATATYPE")){
+      num = 1;
+    } else if (previousType && previousType.includes("DATATYPE") && isIdentifier(token.token) && num == 1){
+      token.type = "CONSTANT_IDENTIFIER";
+      num = 0;
+    }
+    previousType = token.type;
+  }
+  return tokens;
+}
+
+
 
 
 // Lexical Analyzer
-function lexer(sourceCode) {
+function Lexer (sourceCode) {
 
-
+    console.log("rawr")
 
   sourceCode = sourceCode;
   // create an array to store the tokens
@@ -202,41 +219,91 @@ function lexer(sourceCode) {
         currentIndex++;
         currentChar = sourceCode[currentIndex];
       }
+
       if (isKeyword(currentToken)) {
         tokens.push({
           token: currentToken,
-          type: "keyword"
+          type: Keyword(currentToken)
+        }
+        );
+      } else if (isConstant(currentToken)) {
+        tokens.push({
+          token: currentToken,
+          type: Constants(currentToken)
         }
         );
       } else if (isReservedWord(currentToken)) {
         tokens.push({
           token: currentToken,
-          type: "reserved_word"
+          type: ReservedWord(currentToken)
+        }
+        );
+      } else if (isInvalidIdentifier(currentToken)) {
+        tokens.push({
+          token: currentToken,
+          type: "invalid_identifier"
         }
         );
       } else if (isIdentifier(currentToken)) {
         tokens.push({
           token: currentToken,
-          type: "identifier"
+          type: "IDENTIFIER"
         }
         );
       }
       currentToken = "";
 
       // For number
+    } else if (currentChar === "-") {
+      let number = "-";
+      currentChar = sourceCode[++currentIndex];
+      if (isNumber(currentChar)) {
+        while (isNumber(currentChar) || currentChar === '.') {
+          number += currentChar;
+          currentChar = sourceCode[++currentIndex];
+        }
+        let match;
+        if ((match = number.match(/^-\d+(\.\d+)?$/)) !== null) {
+          if (match[1] === undefined) {
+            tokens.push({
+              type: "NEGATIVE_INTEGER_NUMBER",
+              token: number
+            });
+          } else {
+            tokens.push({
+              type: "NEGATIVE_DECIMAL_NUMBER",
+              token: number
+            });
+          }
+        }
+      } else {
+        tokens.push({
+          type: "SUBTRACTION_OPERATOR",
+          token: number
+        });
+      }
     } else if (isNumber(currentChar)) {
-      while (isNumber(currentChar)) {
-        currentToken += currentChar;
-        currentIndex++;
-        currentChar = sourceCode[currentIndex];
+      let number = "";
+      while (isNumber(currentChar) || currentChar === '.') {
+        number += currentChar;
+        currentChar = sourceCode[++currentIndex];
       }
-      tokens.push({
-        token: currentToken,
-        type: "number"
-      }
-      );
-      currentToken = "";
+      let match;
+      if ((match = number.match(/^\d+(\.\d+)?$/)) !== null) {
 
+        if (match[1] === undefined) {
+          tokens.push({
+            type: "INTEGER_NUMBER",
+            token: number
+          });
+        } else {
+          tokens.push({
+            type: "DECIMAL_NUMBER",
+            token: number
+          });
+        }
+      }
+      currentToken = "";
 
       // For multi line comment
     } else if (currentChar === "/" && sourceCode[currentIndex + 1] === "*") {
@@ -251,7 +318,7 @@ function lexer(sourceCode) {
       currentChar = sourceCode[currentIndex];
       tokens.push({
         token: currentToken,
-        type: "multiline_comment"
+        type: "MULTILINE_COMMENT"
       }
       );
       currentToken = "";
@@ -266,7 +333,7 @@ function lexer(sourceCode) {
       }
       tokens.push({
         token: "\\\\" + currentToken,
-        type: "singleline_comment"
+        type: "SINGLELINE_COMMENT"
       });
       currentToken = "";
 
@@ -281,15 +348,15 @@ function lexer(sourceCode) {
       }
       tokens.push({
         token: '"',
-        type: "open_quotation"
+        type: "OPEN_QUOTATION"
       });
       tokens.push({
         token: currentToken,
-        type: "string_literal"
+        type: "STRING_LITERAL"
       });
       tokens.push({
         token: '"',
-        type: "end_quotation"
+        type: "CLOSE_QUOTATION"
       });
       currentIndex++;
       currentToken = "";
@@ -299,7 +366,7 @@ function lexer(sourceCode) {
       currentToken += currentChar + sourceCode[currentIndex + 1];
       tokens.push({
         token: currentToken,
-        type: "increment"
+        type: Operator(currentToken)
       }
       );
       currentIndex += 2;
@@ -310,7 +377,18 @@ function lexer(sourceCode) {
       currentToken += currentChar + sourceCode[currentIndex + 1];
       tokens.push({
         token: currentToken,
-        type: "decrement"
+        type: Operator(currentToken)
+      }
+      );
+      currentIndex += 2;
+      currentToken = "";
+
+      // For logical operators
+    } else if (isLogicalOperator(currentChar + sourceCode[currentIndex + 1])) {
+      currentToken += currentChar + sourceCode[currentIndex + 1];
+      tokens.push({
+        token: currentToken,
+        type: Operator(currentToken)
       }
       );
       currentIndex += 2;
@@ -328,7 +406,7 @@ function lexer(sourceCode) {
       }
       tokens.push({
         token: currentToken,
-        type: "relational_operator"
+        type: Operator(currentToken)
       }
       );
       currentIndex++;
@@ -346,35 +424,26 @@ function lexer(sourceCode) {
       }
       tokens.push({
         token: currentToken,
-        type: "assignment_operator"
+        type: Operator(currentToken)
       }
       );
-
-
       currentIndex++;
       currentToken = "";
 
       // For arithmetic operators
     } else if (isArithmeticOperator(currentChar)) {
+      tokens.push({
+        token: currentChar,
+        type: Operator(currentToken)
+      });
+      currentIndex++;
 
-      if (isLetter(sourceCode[currentIndex - 1]) && isLetter(sourceCode[currentIndex + 1]) ||
-        isNumber(sourceCode[currentIndex - 1]) && isNumber(sourceCode[currentIndex + 1]) ||
-        sourceCode[currentIndex - 1] === " " && sourceCode[currentIndex + 1] === " " &&
-        isLetter(sourceCode[currentIndex - 2]) && isLetter(sourceCode[currentIndex + 2]) ||
-          sourceCode[currentIndex - 1] === " " && sourceCode[currentIndex + 1] === " " &&
-        isNumber(sourceCode[currentIndex - 1]) && isNumber(sourceCode[currentIndex + 1])) {
-        tokens.push({
-          token: currentChar,
-          type: "arithmetic_operator"
-        });
-        currentIndex++;
-      } else {
-        tokens.push({
-          token: currentChar,
-          type: "invalid"
-        });
-        currentIndex++;
-      }
+      // For delimeters
+    } else if (isDelimeter(currentChar)) {
+      tokens.push({
+        token: currentChar,
+        type: Delimeter(currentChar)
+      });
 
       if (isSpecialCharacter(sourceCode[currentIndex + 1])) {
         currentToken += currentChar;
@@ -386,77 +455,21 @@ function lexer(sourceCode) {
         }
         tokens.push({
           token: currentToken,
-          type: "invalid"
+          type: "INVALID"
         });
         currentIndex++;
         currentToken = "";
       }
 
-
-      // For delimeters
-    } else if (isDelimeter(currentChar)) {
-      if (currentChar === ";")
-        tokens.push({
-          token: currentChar,
-          type: "semicolon_delimeter"
-        });
-      if (currentChar === ",")
-        tokens.push({
-          token: currentChar,
-          type: "comma_delimeter"
-        });
-
-        if (isSpecialCharacter(sourceCode[currentIndex + 1])) {
-          currentToken += currentChar;
-          let nextChar = sourceCode[currentIndex + 1];
-          while (isSpecialCharacter(nextChar)) {
-            currentIndex++;
-            currentToken += nextChar;
-            nextChar = sourceCode[currentIndex + 1];
-          }
-          tokens.push({
-            token: currentToken,
-            type: "invalid"
-          });
-          currentIndex++;
-          currentToken = "";
-        }
       currentIndex++;
 
       // For brackets
     } else if (isBracket(currentChar)) {
-      if (currentChar === "(")
-        tokens.push({
-          token: currentChar,
-          type: "open_parenthesis"
-        });
-      if (currentChar === ")")
-        tokens.push({
-          token: currentChar,
-          type: "close_parenthesis"
-        });
-      if (currentChar === "{")
-        tokens.push({
-          token: currentChar,
-          type: "open_curly_bracket"
-        });
-      if (currentChar === "}")
-        tokens.push({
-          token: currentChar,
-          type: "close_curly_bracket"
-        });
-      if (currentChar === "[")
-        tokens.push({
-          token: currentChar,
-          type: "open_square_bracket"
-        });
-      if (currentChar === "]")
-        tokens.push({
-          token: currentChar,
-          type: "close_square_bracket"
-        });
+      tokens.push({
+        token: currentChar,
+        type: Bracket(currentChar)
+      });
       currentIndex++;
-
       // For ternary operators
     } else if (
       isTernaryOperator(
@@ -485,7 +498,7 @@ function lexer(sourceCode) {
 
       tokens.push({
         token: currentToken,
-        type: "ternary_operator"
+        type: Operator(currentToken)
       }
       );
       currentIndex++;
@@ -502,12 +515,6 @@ function lexer(sourceCode) {
       currentIndex++;
     } else {
 
-      if (!(isIdentifier))
-        tokens.push({
-          type: "error",
-          value: tokens[i]
-        });
-
       // Ignore whitespaces and other characters
       currentIndex++;
     }
@@ -519,11 +526,12 @@ function lexer(sourceCode) {
   }
 
 
+  
 
   // return the tokens array
-  return tokens;
+  return checkConsecutive(tokens);
+
 }
 
-export default lexer;
 
-//JOB FUNCTION DECLRATION
+export default Lexer;
