@@ -3,6 +3,7 @@ import Lexer1 from "./Lexer1";
 import Lexer from "./Lexer";
 import styled from "styled-components";
 import { saveAs } from 'file-saver';
+import { brackets } from "./tokens";
 
 const MainDiv = styled.div`
   display: flex;

@@ -169,6 +169,10 @@ function Constants(token) {
 function checkConsecutive(tokens) {
   let previousType = null;
   let num = 0;
+  let job1 = 0;
+  let job2 = [];
+  let num1 = 0;
+  let num2 = [];
 
   for (let i = 0; i < tokens.length; i++) {
     const token = tokens[i];
@@ -218,17 +222,100 @@ function checkConsecutive(tokens) {
     ) {
       token.type = "CONSTANT_IDENTIFIER";
       num = 0;
+      num1 = 1;
+      
     } else if (
       previousType &&
       previousType.includes("QUOTATION_SYMBOL") &&
       token.token === ""
     ) {
       token.type = "INVALID_STRING_LITERAL";
-    }
+    } else if (
+      previousType === "KEY_RESERVED_WORD" &&
+      isIdentifier(token.token)
+    ) {
+      token.type = "JUMP_IDENTIFIER";
+      job2.push({token: token.token, index: i});
+    } else if (
+      previousType &&
+      previousType.includes("JUMP_KEYWORD") &&
+      job2.find(x => x.token === token.token)
+    ) {
+      token.type = "JUMP_IDENTIFIER";
+    } else if (
+      previousType &&
+      previousType.includes("JUMP_KEYWORD") &&
+      job2.find(x => x.token === token.token)
+    ) {
+      token.type = "JUMP_IDENTIFIER";
+    } else if (
+      previousType === "JOB_FUNCTION_KEYWORD" &&
+      isIdentifier(token.token)
+    ) {
+      token.type = "JOB_IDENTIFIER";
+      job1 = 1;
+    } else if (
+      previousType ===  "JOB_IDENTIFIER" &&
+      token.type === "OPEN_PARENTHESIS_BRACKET" &&
+      job1 === 1
+    ) {
+      token.type = "OPEN_PARENTHESIS_PARAMETER";
+      job1 = 2;
+    } else if (
+      token.type === "CLOSE_PARENTHESIS_BRACKET" &&
+      job1 === 2
+    ) {
+      token.type = "CLOSE_PARENTHESIS_PARAMETER";
+      job1 = 3;
+    } else if (
+      previousType === "JOB_PARAMETER_IDENTIFIER" &&
+      token.type === "IDENTIFIER" &&
+      job1 === 2
+    ) {
+      token.type = "INVALID";
+    } else if (
+      token.type === "IDENTIFIER" &&
+      job1 === 2
+    ) {
+      token.type = "JOB_PARAMETER_IDENTIFIER";
+      job2.push({token: token.token, index: i});
+    } else if (
+      job1 === 3 && 
+      job2.find(x => x.token === token.token)
+  ) {
+    token.type = "JOB_PARAMETER_IDENTIFIER";
+  }
+
     previousType = token.type;
   }
   return tokens;
 }
+
+function checkMatchingBrackets(tokens) {
+  let stack = [];
+  
+  for (let i = 0; i < tokens.length; i++) {
+    const token = tokens[i];
+
+    if (token.type === "OPEN_SQUARE_BRACKET" || token.type === "OPEN_PARENTHESIS_BRACKET"|| token.type === "OPEN_CURLY_BRACKET") {
+      stack.push({index: i, token});
+    } else if (token.type === "CLOSE_SQUARE_BRACKET" || token.type === "CLOSE_PARENTHESIS_BRACKET"|| token.type === "CLOSE_CURLY_BRACKET") {
+      if (stack.length === 0) {
+        token.type = "UNEXPECTED_CHARACTER";
+      } else {
+        stack.pop();
+      }
+    }
+  }
+
+  if (stack.length > 0) {
+    for (let i = 0; i < stack.length; i++) {
+        stack[i].token.type = "UNEXPECTED_CHARACTER";
+    }
+  } 
+  return tokens;
+}
+
 
 // Lexical Analyzer
 function Lexer(sourceCode) {
@@ -549,9 +636,11 @@ function Lexer(sourceCode) {
   if (currentToken !== "") {
     tokens.push(currentToken);
   }
+  tokens = checkMatchingBrackets(tokens)
+  tokens = checkConsecutive(tokens);
 
   // return the tokens array
-  return checkConsecutive(tokens);
+  return tokens;
 }
 
 export default Lexer;

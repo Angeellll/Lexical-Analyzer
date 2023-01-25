@@ -38,7 +38,7 @@ function Page() {
                 <Title>LESS PROGRAMMING LANGUAGE</Title>
             </Rawr>
             <Form />
-            <Lexer />
+            {/* <Lexer /> */}
         </MainDiv>
     )
 }
