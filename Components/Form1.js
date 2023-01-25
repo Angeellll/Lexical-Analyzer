@@ -32,7 +32,6 @@ const Input = styled.textarea`
   font-weight: 500;
   resize: none;
   border: double 3px transparent;
-
   &:hover {
     border: double 3px transparent;
     border-radius: 15px;
@@ -41,7 +40,6 @@ const Input = styled.textarea`
     background-origin: border-box;
     background-clip: padding-box, border-box;
   }
-
   &:focus {
     border-radius: 15px;
     background-image: linear-gradient(white, white),
@@ -60,7 +58,6 @@ const InputFile = styled.input.attrs({
   background-color: white;
   border: 1px solid black;
   border-radius: 5px;
-
   &:focus {
     color: black;
   }
@@ -92,7 +89,6 @@ const Button = styled.button`
   font-weight: 700;
   margin-top: 20px;
   box-shadow: 0px 4px 6px #f9f9f971;
-
   &:hover {
     background-image: linear-gradient(to right, #572a8b, #fa00ff);
     cursor: pointer;
@@ -109,7 +105,6 @@ const Button1 = styled.button`
   font-weight: 700;
   margin-top: 20px;
   box-shadow: 0px 4px 6px #f9f9f971;
-
   &:hover {
     background-image: linear-gradient(to right, #572a8b, #fa00ff);
     cursor: pointer;
@@ -140,26 +135,43 @@ const Form = () => {
   const handleFileSubmit = (e) => {
     console.log(sourceCode)
     setClicked(!click);
-    
+
     if (!sourceCode) {
       alert('Input .lss file!');
       return;
-    } 
-      const tokenized = tokensToString(Lexer1(sourceCode));
-      const file = new Blob([tokenized], {type: 'text/plain;charset=utf-8'});
-      saveAs(file, 'tokenized.txt');
-    
+    }
+    const tokenized = tokensToString(Lexer1(sourceCode));
+    const file = new Blob([tokenized], { type: 'text/plain;charset=utf-8' });
+    saveAs(file, 'tokenized.txt');
+
     e.preventDefault();
 
   };
 
+  const Table = require('cli-table3');
+
+
   function tokensToString(tokens) {
-    let tableString = "Token \t| Lexeme\n";
+    
+let table = new Table({
+    head: ['Token', 'Lexeme'],
+    colWidths: [30, 30],
+    truncate: 'true',
+    style: { 'padding-left': 0, 'padding-right': 0,head: ['green'], border: [] },
+    colAligns: ['center', 'center'],
+    colLimit: [1,1]
+});
+
+  
+  
+
+
     for (let i = 0; i < tokens.length; i++) {
-      tableString += tokens[i].type + " \t| " + tokens[i].token + "\n";
+      table.push([tokens[i].type, tokens[i].token]);
     }
-    return tableString;
+    return table;
   }
+
 
 
   const handleSubmit = (e) => {

@@ -223,7 +223,12 @@ function checkConsecutive(tokens) {
       token.type = "CONSTANT_IDENTIFIER";
       num = 0;
       num1 = 1;
-      
+      job2.push({token: token.token, index: i});
+    } else if (
+      num1 == 1 &&
+      job2.find(x => x.token === token.token)
+    ) {
+      token.type = "CONSTANT_IDENTIFIER";
     } else if (
       previousType &&
       previousType.includes("QUOTATION_SYMBOL") &&
@@ -236,6 +241,11 @@ function checkConsecutive(tokens) {
     ) {
       token.type = "JUMP_IDENTIFIER";
       job2.push({token: token.token, index: i});
+    } else if (
+      previousType === "BOOLEAN_DATATYPE_KEYWORD" &&
+      isIdentifier(token.token)
+    ) {
+      token.type = "BOOLEAN_IDENTIFIER";
     } else if (
       previousType &&
       previousType.includes("JUMP_KEYWORD") &&

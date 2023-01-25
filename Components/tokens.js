@@ -2,8 +2,8 @@
 
 const reservedWords = new Map();
 reservedWords.set("null", "NULL_RESERVED_WORD");
-reservedWords.set("True", "TRUE_RESERVED_WORD");
-reservedWords.set("False", "FALSE_RESERVED_WORD");
+reservedWords.set("True", "TRUE_BOOLEAN_RESERVED_WORD");
+reservedWords.set("False", "FALSE_BOOLEAN_RESERVED_WORD");
 reservedWords.set("key", "KEY_RESERVED_WORD");
 
 const constants = new Map();
