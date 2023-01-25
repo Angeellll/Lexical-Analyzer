@@ -151,20 +151,11 @@ const Form = () => {
   const Table = require('cli-table3');
 
 
-  function tokensToString(tokens) {
-    
-let table = new Table({
-    head: ['Token', 'Lexeme'],
-    colWidths: [30, 30],
-    truncate: 'true',
-    style: { 'padding-left': 0, 'padding-right': 0,head: ['green'], border: [] },
-    colAligns: ['center', 'center'],
-    colLimit: [1,1]
-});
-
-    for (let i = 0; i < tokens.length; i++) {
+ for (let i = 0; i < tokens.length; i++) {
+      tableString += tokens[i].type + " \t| " + tokens[i].token + "\n";
       table.push([tokens[i].type, tokens[i].token]);
     }
+    return tableString;
     return table;
   }
 
