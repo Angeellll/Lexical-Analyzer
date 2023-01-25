@@ -162,10 +162,6 @@ let table = new Table({
     colLimit: [1,1]
 });
 
-  
-  
-
-
     for (let i = 0; i < tokens.length; i++) {
       table.push([tokens[i].type, tokens[i].token]);
     }
