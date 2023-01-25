@@ -189,7 +189,7 @@ const Form = () => {
           <form onSubmit={handleSubmit} autoComplete="off">
             <Input
               name="sourceCode"
-              placeholder='//  Try show("Hello World");'
+              placeholder='UPLOAD .LSS FILE'
               value={sourceCode}
               onChange={handleTextAreaChange}
               readOnly
